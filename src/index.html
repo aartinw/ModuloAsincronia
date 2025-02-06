@@ -11,10 +11,12 @@
   <body>
     <div class="root">
       <h1>Personajes de Mortadelo y Filemón</h1>
-      <div class="contenedor-filtrar">
-        <input type="text" name="filtrado" id="filtrar" />
-        <button id="boton-filtrar">Filtrar</button>
-      </div>
+      <form class="contenedor-formulario">
+        <div class="contenedor-filtrar">
+          <input type="text" name="filtrado" id="filtrar" />
+          <button id="boton-filtrar">Filtrar</button>
+        </div>
+      </form>
       <div id="listado-personajes"></div>
     </div>
     <script type="module" src="./personajes-listado.ts"></script>

@@ -5,13 +5,9 @@ import {
 import { Personaje } from "./personajes-listado.model";
 
 const inputBuscar = document.querySelector<HTMLInputElement>("#filtrar");
-const botonFiltrar =
-  document.querySelector<HTMLButtonElement>("#boton-filtrar");
 const listadoPersonajes = document.querySelector<HTMLDivElement>(
   "#listado-personajes"
 );
-
-let personajes: Personaje[] = [];
 
 const crearElementoImagen = (imagen: string): HTMLImageElement => {
   const fotoPersonaje = document.createElement("img");
@@ -55,32 +51,33 @@ const crearContenedorPersonaje = (personaje: Personaje): HTMLDivElement => {
 };
 
 const pintarPersonajes = (lista: Personaje[]): void => {
-  if (!listadoPersonajes) return;
+  if (listadoPersonajes && listadoPersonajes instanceof HTMLDivElement) {
+    listadoPersonajes.innerHTML = "";
 
-  listadoPersonajes.innerHTML = "";
-
-  lista.forEach((personaje) => {
-    const contenedorPersonaje = crearContenedorPersonaje(personaje);
-    listadoPersonajes.appendChild(contenedorPersonaje);
-  });
+    lista.forEach((personaje) => {
+      const contenedorPersonaje = crearContenedorPersonaje(personaje);
+      listadoPersonajes.appendChild(contenedorPersonaje);
+    });
+  }
 };
 
-const filtrarPersonajes = async () => {
-  if (!inputBuscar) return;
+const filtrarPersonajes = async (evento: Event) => {
+  evento.preventDefault();
+  if (inputBuscar && inputBuscar instanceof HTMLInputElement) {
+    const textoBusqueda = inputBuscar.value.trim();
 
-  const textoBusqueda = inputBuscar.value.trim();
+    const personajesFiltrados = await filtrarPersonajesPorNombre(textoBusqueda);
+    console.log(personajesFiltrados);
 
-  const personajesFiltrados = await filtrarPersonajesPorNombre(textoBusqueda);
-  console.log(personajesFiltrados);
-
-  pintarPersonajes(personajesFiltrados);
+    pintarPersonajes(personajesFiltrados);
+  }
 };
 
-const cargarPersonajes = async (): Promise<void> => {
-  personajes = await obtenerPersonajes();
-  console.log("Personajes cargados:", personajes);
+document.addEventListener("DOMContentLoaded", async () => {
+  const personajes = await obtenerPersonajes();
+  const formulario = document.querySelector(".contenedor-formulario");
+  if (formulario && formulario instanceof HTMLFormElement) {
+    formulario.addEventListener("submit", filtrarPersonajes);
+  }
   pintarPersonajes(personajes);
-};
-
-document.addEventListener("DOMContentLoaded", cargarPersonajes);
-botonFiltrar?.addEventListener("click", filtrarPersonajes);
+});
